@@ -1478,12 +1478,7 @@ void draw_parts(pixel *vid)
 				cb = 0;
 			blendpixel(vid, nx, ny, cr, cg, cb, 255);
 		}
-		else if(cmode==CM_FANCY &&
-				t!=PT_FIRE && t!=PT_PLSM &&	t!=PT_WTRV &&
-				t!=PT_HFLM && t!=PT_SPRK && t!=PT_FIRW &&
-				t!=PT_DUST && t!=PT_FIRW && t!=PT_FWRK &&
-				t!=PT_NEUT && t!=PT_LAVA && t!=PT_BOMB &&
-				t!=PT_PHOT && t!=PT_THDR && t!=PT_SMKE)
+		else if(cmode==CM_FANCY)
 		{
 			if(ptypes[parts[i].type].properties&TYPE_LIQUID)
 			{
@@ -2550,6 +2545,26 @@ void draw_parts(pixel *vid)
 					if(cb<=0)
 						cb = 0;
 					blendpixel(vid, nx, ny, cr, cg, cb, 255);
+
+					//This hot glow brought to you by HK6
+					if(cmode == CM_FIRE||cmode==CM_BLOB || cmode==CM_FANCY)
+                    {
+                        cr /= 32 / ((q * frequency) / 2);
+                        cg /= 32 / ((q * frequency) / 2);
+                        cb /= 32 / ((q * frequency) / 2);
+                        x = nx/CELL;
+                        y = ny/CELL;
+                        cr += fire_r[y][x];
+                        if(cr > 255) cr = 255;
+                        fire_r[y][x] = cr;
+                        cg += fire_g[y][x];
+                        if(cg > 255) cg = 255;
+                        fire_g[y][x] = cg;
+                        cb += fire_b[y][x];
+                        if(cb > 255) cb = 255;
+                        fire_b[y][x] = cb;
+                    }
+
 				}
                 else if(t==PT_FIRE && parts[i].life)
                 {
